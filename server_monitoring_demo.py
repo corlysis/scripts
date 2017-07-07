@@ -6,8 +6,8 @@ import argparse
 
 # constants
 URL = 'https://corlysis.com:8086/write'
-READING_DATA_PERIOD_MS = 5000.0
-SENDING_PERIOD = 2
+READING_DATA_PERIOD_MS = 1000.0
+SENDING_PERIOD = 5
 MAX_LINES_HISTORY = 1000
 
 
