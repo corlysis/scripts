@@ -32,16 +32,16 @@
 #include <ESP8266HTTPClient.h>
 
 // Wi-Fi settings
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "YOUR-SSID";
+const char* password = "YOUR-PASSWORD";
 
 // Sensor settings
 const uint8_t sensor_address = 0x76;
 
-// Corlysis Setting
-const char* db_name = "";
-const char* token_password = "";
-const unsigned long delayTime = 5000;
+// Corlysis Setting - click to the database to get those info
+const char* db_name = "YOUR-DB_NAME";
+const char* db_password = "YOUR-DB-PASSWORD";
+const unsigned long delayTimeMs = 10000;
 
 
 Adafruit_BME280 bme;
@@ -54,7 +54,7 @@ void setup() {
 
     bool status;
     
-    // (you can also pass in a Wire library object like &Wire2)
+    // you can also pass in a Wire library object like &Wire2
     status = bme.begin(sensor_address);  
     if (!status) {
         Serial.println("Could not find a valid BME280 sensor, check wiring!");
@@ -89,26 +89,9 @@ void loop() {
     float humidity = bme.readHumidity();
 
     sendDataToCorlysis(temperature, pressure, humidity);
-    printValues(temperature, pressure, humidity);
-    delay(delayTime);
+    delay(delayTimeMs);
 }
 
-
-void printValues(float temperature, float pressure, float humidity) {
-    Serial.print("Temperature = ");
-    Serial.print(temperature);
-    Serial.println(" *C");
-
-    Serial.print("Pressure = ");
-    Serial.print(pressure / 100.0F);
-    Serial.println(" hPa");
-
-    Serial.print("Humidity = ");
-    Serial.print(humidity);
-    Serial.println(" %");
-
-    Serial.println();
-}
 
 void sendDataToCorlysis(float temperature, float pressure, float humidity) {
 
@@ -118,7 +101,7 @@ void sendDataToCorlysis(float temperature, float pressure, float humidity) {
     Serial.println(payload_str);
     
     char corlysis_url[200];
-    sprintf(corlysis_url, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", db_name, token_password);
+    sprintf(corlysis_url, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", db_name, db_password);
     http.begin(corlysis_url, "C9:26:17:DA:C1:9E:BB:9F:3E:6E:56:89:E7:69:DA:9F:14:EA:54:DE");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
     int httpCode = http.POST(payload_str);
@@ -132,5 +115,6 @@ void sendDataToCorlysis(float temperature, float pressure, float humidity) {
     }else{
         Serial.println("Data were not sent. Check network connection.");  
     }
+    Serial.println("");  
 }
 
