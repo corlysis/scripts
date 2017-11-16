@@ -102,7 +102,7 @@ void sendDataToCorlysis(float temperature, float pressure, float humidity) {
     
     char corlysis_url[200];
     sprintf(corlysis_url, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", db_name, db_password);
-    http.begin(corlysis_url, "C9:26:17:DA:C1:9E:BB:9F:3E:6E:56:89:E7:69:DA:9F:14:EA:54:DE");
+    http.begin(corlysis_url, "DE:AF:1B:6B:3B:0C:E2:AA:D7:9E:85:A2:54:B5:BB:F4:D5:AB:18:F4");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
     int httpCode = http.POST(payload_str);
     Serial.print("http result:");
