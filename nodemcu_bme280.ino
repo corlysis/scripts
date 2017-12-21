@@ -97,8 +97,8 @@ void loop() {
 void sendDataToCorlysis(float temperature, float pressure, float humidity) {
 
     char payload_str[150];
-    sprintf(payload_str, "bme280_data temperature=%d.%02d,pressure=%d.%02d,humidity=%d.%02d", (int)temperature, (int)(temperature*100)%100, 
-    (int)pressure, (int)(pressure*100)%100, (int)humidity, (int)(humidity*100)%100);
+    sprintf(payload_str, "bme280_data temperature=%d.%02d,pressure=%d.%02d,humidity=%d.%02d", (int)temperature, (int)abs(temperature*100)%100, 
+    (int)pressure, (int)abs(pressure*100)%100, (int)humidity, (int)abs(humidity*100)%100);
     Serial.println(payload_str);
     
     char corlysis_url[200];
