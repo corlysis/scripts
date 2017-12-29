@@ -55,7 +55,7 @@ void setup() {
     bool status;
     
     // you can also pass in a Wire library object like &Wire2
-    status = bme.begin(sensor_address);  
+    status = bme.begin(sensorAddress);  
     if (!status) {
         Serial.println("Could not find a valid BME280 sensor, check wiring!");
         while (1);
@@ -82,7 +82,7 @@ void setup() {
 }
 
 
-void loop() { 
+void loop() {
     // read data from sensor
     float temperature = bme.readTemperature();
     //temperature = 9.0/5.0 * temperature + 32.0;
@@ -90,32 +90,41 @@ void loop() {
     float humidity = bme.readHumidity();
 
     sendDataToCorlysis(temperature, pressure, humidity);
+    
     delay(delayTimeMs);
 }
 
 
 void sendDataToCorlysis(float temperature, float pressure, float humidity) {
-
-    char payload_str[150];
-    sprintf(payload_str, "bme280_data temperature=%d.%02d,pressure=%d.%02d,humidity=%d.%02d", (int)temperature, (int)abs(temperature*100)%100, 
-    (int)pressure, (int)abs(pressure*100)%100, (int)humidity, (int)abs(humidity*100)%100);
-    Serial.println(payload_str);
+    static long counter = 0;
     
-    char corlysis_url[200];
-    sprintf(corlysis_url, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", db_name, db_password);
-    http.begin(corlysis_url, "DE:AF:1B:6B:3B:0C:E2:AA:D7:9E:85:A2:54:B5:BB:F4:D5:AB:18:F4");
+    char payloadStr[150];
+    sprintf(payloadStr, "bme280_data temperature=%d.%02d,pressure=%d.%02d,humidity=%d.%02d", (int)temperature, (int)abs(temperature*100)%100, 
+    (int)pressure, (int)abs(pressure*100)%100, (int)humidity, (int)abs(humidity*100)%100);
+    Serial.println(payloadStr);
+    
+    char corlysisUrl[200];
+    sprintf(corlysisUrl, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", dbName, dbPassword);
+    http.begin(corlysisUrl, "DE:AF:1B:6B:3B:0C:E2:AA:D7:9E:85:A2:54:B5:BB:F4:D5:AB:18:F4");
+
+    
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
-    int httpCode = http.POST(payload_str);
+    int httpCode = http.POST(payloadStr);
     Serial.print("http result:");
     Serial.println(httpCode);
     http.writeToStream(&Serial);
     http.end();
 
     if(httpCode == 204) {
-        Serial.println("Data successfully sent.");      
+        counter = 0;
+        Serial.println("Data successfully sent.");
     }else{
-        Serial.println("Data were not sent. Check network connection.");  
+        if(counter > 10 && httpCode == -1) {
+            Serial.println("WiFi: still not connected -> reboot.");
+            WiFi.forceSleepBegin(); wdt_reset(); ESP.restart(); while(1)wdt_reset();
+        }
+        counter++;
+        Serial.println("Data were not sent. Check network connection.");
     }
     Serial.println("");  
 }
-
