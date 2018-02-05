@@ -104,8 +104,11 @@ void sendDataToCorlysis(float temperature, float pressure, float humidity) {
     Serial.println(payloadStr);
     
     char corlysisUrl[200];
-    sprintf(corlysisUrl, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", dbName, dbPassword);
-    http.begin(corlysisUrl, "92:23:13:0D:59:68:58:83:E6:82:98:EB:18:D7:68:B5:C8:90:0D:03");
+    sprintf(corlysisUrl, "http://corlysis.com:8087/write?db=%s&u=token&p=%s", dbName, dbPassword);
+    http.begin(corlysisUrl);
+    //HTTPS variant - check ssh public key fingerprint
+    //sprintf(corlysisUrl, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", dbName, dbPassword);
+    //http.begin(corlysisUrl, "92:23:13:0D:59:68:58:83:E6:82:98:EB:18:D7:68:B5:C8:90:0D:03");
 
     
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
