@@ -108,7 +108,7 @@ void sendDataToCorlysis(float temperature, float pressure, float humidity) {
     http.begin(corlysisUrl);
     //HTTPS variant - check ssh public key fingerprint
     //sprintf(corlysisUrl, "https://corlysis.com:8086/write?db=%s&u=token&p=%s", dbName, dbPassword);
-    //http.begin(corlysisUrl, "92:23:13:0D:59:68:58:83:E6:82:98:EB:18:D7:68:B5:C8:90:0D:03");
+    //http.begin(corlysisUrl, "FF:2D:E9:25:75:39:D1:A0:5C:99:02:34:EF:81:73:0F:3F:3E:2D:0D");
 
     
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
